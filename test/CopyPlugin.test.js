@@ -1451,6 +1451,27 @@ describe('apply function', () => {
         .then(done)
         .catch(done);
     });
+    it('can move a symlink to the root directory', (done) => {
+      // Windows doesn't support symbolic link
+      const absolutePath = path.resolve(TEMP_DIR, 'file-ln.txt');
+      runEmit({
+        symlink: true,
+        expectedAssetKeys:
+          process.platform === 'win32' ? [] : ['../tempdir/file-ln.txt'],
+        expectedAssetContent: {
+          '../tempdir/file-ln.txt': 'file.txt',
+        },
+        patterns: [
+          {
+            from: 'symlink/file-ln.txt',
+            resolveSymlink: false,
+            to: absolutePath,
+          },
+        ],
+      })
+        .then(done)
+        .catch(done);
+    });
   });
 
   describe('with directory in from', () => {
